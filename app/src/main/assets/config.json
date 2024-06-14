@@ -1,0 +1,12 @@
+{
+  "type": "ButtonConfig",
+  "color": "#FF6200EE",
+  "width": 200,
+  "height": 50,
+  "text": {
+    "type": "TextViewConfig",
+    "text": "Button!",
+    "fontSize": 24,
+    "color": "#FFFFFFFF"
+  }
+}
