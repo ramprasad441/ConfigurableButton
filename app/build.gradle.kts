@@ -1,89 +1,107 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    kotlin("plugin.serialization") version "1.8.0"
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    // kotlin-android is now built into the android-application plugin
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.compose.compiler)
+    // id("kotlin-kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.configurui.configurablebutton"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.configurui.configurablebutton"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
+/*    kotlin {
+        jvmToolchain(21)
+
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }*/
+
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    kapt {
-        correctErrorTypes = true
+
+    sourceSets {
+        getByName("debug") {
+            java.directories.add(
+                "build/generated/ksp/debug/kotlin",
+            )
+        }
+
+        getByName("release") {
+            java.directories.add(
+                "build/generated/ksp/release/kotlin",
+            )
+        }
     }
 }
 
 dependencies {
+    // Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 
-    implementation(libs.androidx.activity.compose)
+    // UI & Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+
+    // DI & Logic
     implementation(libs.hilt.android)
+    // kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.kotlinx.serialization.json)
-    implementation(platform(libs.androidx.compose.bom))
-    kapt(libs.hilt.android.compiler)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    debugImplementation(libs.androidx.ui.test.manifest)
-    debugImplementation(libs.androidx.ui.tooling)
-    testImplementation(libs.espresso.core)
+
+    // Testing
     testImplementation(libs.junit)
-    testImplementation(libs.test.ext)
-    testImplementation (libs.mockito.core)
-    testImplementation (libs.mockito.kotlin)
-    testImplementation (libs.mockk)
-    testImplementation (libs.kotlinx.coroutines.test)
-    testImplementation (libs.mockito.inline)
-    testImplementation (libs.kotlin.reflect)
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
 
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 
 /**
  * Created by Ramprasad on 6/14/24.
@@ -28,7 +29,9 @@ fun RenderComponent(config: UIComponentConfig) {
             RenderTextView(config)
         }
 
-        is UIComponentConfig.EmptyConfig -> Toast.makeText(LocalContext.current,"Fetching configuration...!",Toast.LENGTH_SHORT).show()
+        is UIComponentConfig.EmptyConfig -> {
+            Toast.makeText(LocalContext.current, "Fetching configuration...!", Toast.LENGTH_SHORT).show()
+        }
     }
 }
 
@@ -39,14 +42,15 @@ fun RenderComponent(config: UIComponentConfig) {
  */
 @Composable
 fun RenderButton(config: UIComponentConfig.ButtonConfig) {
-    val backgroundColor = Color(android.graphics.Color.parseColor(config.color))
+    val backgroundColor = Color(config.color.toColorInt())
 
     Button(
         onClick = { /* Handle click */ },
-        modifier = Modifier
-            .width(config.width.dp)
-            .height(config.height.dp)
-            .background(backgroundColor)
+        modifier =
+            Modifier
+                .width(config.width.dp)
+                .height(config.height.dp)
+                .background(backgroundColor),
     ) {
         RenderTextView(config.text)
     }
@@ -54,12 +58,12 @@ fun RenderButton(config: UIComponentConfig.ButtonConfig) {
 
 @Composable
 fun RenderTextView(config: UIComponentConfig.TextViewConfig) {
-    val textColor = Color(android.graphics.Color.parseColor(config.color))
+    val textColor = Color(config.color.toColorInt())
 
     Text(
         text = config.text,
         fontSize = config.fontSize.sp,
         color = textColor,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
     )
 }

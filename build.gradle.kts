@@ -1,24 +1,18 @@
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.ksp) apply false // <--- Add this
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            setUrl("https://jitpack.io")
-        }
-    }
-    dependencies {
-        classpath(libs.android.plugin)
-        classpath(libs.kotlin.gradle.plugin)
-        classpath(libs.hilt.android.gradle.plugin)
+tasks.register<Delete>("clean") {
+    group = "build"
+    description = "Deletes the root project build directory."
 
-    }
-}
-
-tasks.register("clean", Delete::class) {
-    delete(rootProject.layout.buildDirectory)
+    delete(
+        rootProject.layout.buildDirectory
+            .get()
+            .asFile,
+    )
 }
