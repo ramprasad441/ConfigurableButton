@@ -1,6 +1,6 @@
 [versions]
 # Core Build Tools (Standard for May 2026)
-agp = "9.2.0"
+agp = "9.2.1"
 kotlin = "2.3.21"
 ksp = "2.3.7"
 
