@@ -4,8 +4,8 @@ build/
 
 # Android
 local.properties
-.cxx
-.externalNativeBuild
+.cxx/
+.externalNativeBuild/
 captures/
 
 # IntelliJ / Android Studio
@@ -14,6 +14,3 @@ captures/
 
 # OS
 .DS_Store
-
-# IDE stray files
-Task
